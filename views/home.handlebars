@@ -1,0 +1,48 @@
+<div class="container">
+
+
+    <div class="row main-form">
+
+        <div class="col-md-4 col-md-offset-4">
+            <form role="form" class="form">
+
+                <div class="form-group">
+                    <label class="sr-only" for="webcam-name">Name:</label>
+                    <input type="input" class="form-control" id="webcam-name" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="image-url">Webcam JPG address:</label>
+                    <input type="input" class="form-control" id="image-url" placeholder="Feed URL">
+                </div>
+
+                <div class="form-group">
+                    <label class="sr-only" for="longitude">Address:</label>
+                    <input type="input" class="form-control" id="address" placeholder="Address">
+                </div>
+
+                <div class="form-group">
+                    <label for="ignore-darkness">Ignore Darkness:</label>
+                    <input type="checkbox" class="" id="ignore-darkness">
+                </div>
+
+                <button type="submit" class="create-video btn btn-primary">Create</button>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="row videos">
+    {{#each videoList}}
+        <div class="col-md-3 item">
+            <a href="api/videos/{{id}}" style="background-image:url(/videos/timelapse_{{start_time}}.gif)">
+                <div class="text-wrapper">
+                    <h3>{{name}}</h3>
+                    <h4>frames: {{step}}</h4>
+                </div>
+            </a>
+        </div>
+    {{/each}}
+    </div>
+
+
+</div>

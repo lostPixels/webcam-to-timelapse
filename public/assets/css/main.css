@@ -1,0 +1,36 @@
+.main-form{
+	margin-top: 50px;
+}
+.videos .item a{
+    width: 100%;
+    display: table;
+    height: 200px;
+    background-color: #ddd;
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+    color: #FFF;
+}
+.videos .item h3, .videos .item h4{
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.text-wrapper{
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.videos .item img{
+    width: 100%;
+}
+.detail .video-wrapper{
+
+}
+.detail .video-wrapper video{
+    width: 100%;
+}
+
+.item{
+    padding-bottom: 30px;
+}
