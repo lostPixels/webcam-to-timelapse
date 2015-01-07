@@ -33,9 +33,7 @@ exports.find = function(id) {
 
     var deferred = Q.defer();
 
-    Video.find({
-        id: id
-    }, deferred.makeNodeResolver());
+    Video.findById(id, deferred.makeNodeResolver());
 
     return deferred.promise;
 };
@@ -44,7 +42,7 @@ exports.create = function(settings) {
 
     var deferred = Q.defer(),
         time = new Date().getTime(),
-        folderName = sanitize(settings.name+'_' + time),
+        folderName = sanitize(settings.name + '_' + time),
         folderInstance = files.createFolder(folderName);
 
     folderInstance
@@ -65,19 +63,31 @@ exports.create = function(settings) {
                 ignoreDarkness: settings.ignoreDarkness,
                 step: 0
             });
-
-            videoInstance.save(function(err, video) {
-                if (!err) {
-                    console.log('new video saved');
-                    deferred.resolve();
-                } else {
-                    deferred.reject();
-                }
-            });
+            videoInstance.save(deferred.makeNodeResolver());
         })
         .fail(function(){
             deferred.reject();
         });
 
-        return deferred.promise;
+    return deferred.promise;
+};
+
+
+exports.update = function(id, settings) {
+
+    var deferred = Q.defer();
+
+    exports.find(id)
+        .then(function(video) {
+
+            for (var prop in settings) {
+                video[prop] = settings[prop];
+            }
+            video.save(deferred.makeNodeResolver());
+        })
+        .fail(function(err){
+            deferred.reject(err);
+        });
+
+    return deferred.promise;
 };

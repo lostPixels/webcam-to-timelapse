@@ -2,6 +2,7 @@ var Q = require('q'),
     fs = require('fs'),
     request = require('request'),
     files = require('./files'),
+    data = require('./data'),
     config = require('../config.json');
 
 Q.longStackSupport = true;
@@ -9,31 +10,17 @@ Q.longStackSupport = true;
 exports.it = function(opts) {
     var deferred = Q.defer();
 
-    // request.get({
-    //     url: opts.url,
-    //     encoding: 'binary'
-    // }, function(err, res, body) {
-    //     if (!err) {
-    //         saveFile(res, body, opts)
-    //             .then(function() {
-    //                 deferred.resolve();
-    //             })
-    //             .fail(function(err) {
-    //                 deferred.reject(new Error(err));
-    //             });
-    //     } else {
-    //         deferred.reject(err);
-    //     }
-    // });
-
-    var get = Q.denodeify(request.get);
-
     getImage(opts.url)
-        .then(function(res, body) {
-            return saveFile(res, body, opts);
+        .then(function(results) {
+            return saveFile(results.res, results.body, opts);
+        })
+        .then(function() {
+            data.update(opts.id, {
+                step: (opts.step + 1)
+            });
         })
         .catch(function(err) {
-            console.log('error downloading image: ', err);
+            console.log(err, opts.url);
         })
         .finally(function() {
             deferred.resolve();
@@ -51,8 +38,9 @@ function saveFile(res, body, opts) {
     if (verify(res.headers['content-type'], fileSize)) {
 
         if (!previousFilesSize || previousFilesSize !== fileSize) {
-            console.log('save file to:  ', opts.destination);
-            fs.writeFile(config.photoFolder + opts.destination, body, 'binary', deferred.makeNodeResolver());
+            fs.writeFile(opts.destination, body, 'binary', deferred.makeNodeResolver());
+        } else {
+            deferred.reject(new Error('Duplicate Image Found'));
         }
 
     } else {
@@ -72,13 +60,16 @@ function getImage(url) {
     request.get({
         url: url,
         encoding: 'binary'
-    }, function(err, res, body) {
-        console.log('image loaded: ',res,body);
+    }, function(err, response, body) {
         if (!err) {
-            deferred.resolve(res, body);
+            deferred.resolve({res:response,body: body});
         } else {
             deferred.reject(err);
         }
     });
     return deferred.promise;
+}
+
+function updateStep() {
+
 }

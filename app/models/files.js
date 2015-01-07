@@ -14,6 +14,7 @@ exports.createFolder = function(folderID) {
 };
 
 exports.getFileSize = function(file) {
+
     if(!fs.existsSync(file)){
         return false;
     }
