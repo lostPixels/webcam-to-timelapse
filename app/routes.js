@@ -1,13 +1,11 @@
-var data = require('./models/data');
+var data = require('./models/data'),
+    express = require('express');
 
 exports.init = function(app) {
 
+    var router = express.Router();
 
-
-    //////////////
-    // Homepage //
-    //////////////
-    app.get('/', function(req, res) {
+    router.get('/', function(req, res) {
 
         data.list().then(function(videos) {
             res.render('home', {
@@ -16,27 +14,51 @@ exports.init = function(app) {
         });
     });
 
-    app.get('/api/videos', function(req, res) {
+    router.get('/api/videos', function(req, res) {
 
-        data.list().then(function(videos) {
+        data.list()
+        .then(function(videos) {
             if (videos) {
                 res.send(JSON.stringify(videos));
             }
         });
     });
 
-    app.get('/api/videos/:video_id', function(req, res) {
+    router.get('/api/videos/:video_id', function(req, res) {
 
-        data.find(req.params.video_id).then(function(vidResult) {
+        data.find(req.params.video_id)
+        .then(function(vidResult) {
             res.render('detail', {
                 video: vidResult
             });
-        }).fail(function(err) {
+        })
+        .fail(function(err) {
             res.status(404);
         });
     });
 
+    router.post('/api/videos', function(req, res) {
 
+        var name = req.body.name;
+        var image_url = req.body.image_url;
+        var address = req.body.address;
+        var darkness = req.body.ignoreDarkness;
+
+        data.create({
+            name: name,
+            image_url: image_url,
+            address: address,
+            ignoreDarkness: darkness
+        })
+        .then(function() {
+            res.redirect('/');
+        })
+        .fail(function() {
+            res.status(500);
+        });
+    });
+
+    app.use('/', router);
 };
 
 

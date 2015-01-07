@@ -3,15 +3,8 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     hbshelpers = require('./app/models/handlebars-helpers'),
-    routes = require('./app/routes');
-
-    // api = require('./models/api'),
-    // Q = require('q'),
-    // bodyParser = require('body-parser'),
-    // creator = require('./create-video'),
-    // geo = require('./models/geo'),
-    // files = require('./models/files');
-
+    routes = require('./app/routes'),
+    consume = require('./app/models/consume');
 
 var app = express();
 
@@ -33,13 +26,10 @@ app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
     extended: true
 }));
 
-// if (!process.env.OPENSHIFT_NODEJS_PORT) {
-//     creator.kickOff();
-//     console.log('Kickoff cron job');
-//     var kickInt = setInterval(function() {
-//         creator.kickOff();
-//     }, 60000);
-// }
+consume.tick();
+var kickInt = setInterval(function() {
+    consume.tick();
+}, 60000);
 
 routes.init(app);
 

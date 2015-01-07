@@ -1,38 +1,38 @@
 {
-	"name": "webcam-to-timelapse",
-	"description": "Records webcam's and turns them into timelapse movies.",
-	"version": "0.0.1",
-
-	"author": "http://www.tothepixel.com",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/meanjs/mean.git"
-	},
-	"engines": {
-		"node": ">=0.10.28",
-		"npm": ">=1.4.28"
-	},
-	"scripts": {
-		"start": "grunt"
-	},
-	"dependencies": {
-		"grunt-cli": "~0.1.13",
-		"fluent-ffmpeg": "2.0.0-rc3",
-		"request": "~2.49.0",
-		"express": "~4.10.4",
-		"express-handlebars": "~1.1.0",
-		"mongoose": "~3.8.20",
-		"extend": "~2.0.0",
-		"q": "~1.1.2",
-		"body-parser": "^1.10.0",
-		"suncalc": "~1.6.0",
-		"log": "~1.4.0"
-	},
-	"devDependencies": {
-		"supertest": "~0.14.0",
-		"should": "~4.1.0",
-		"grunt-env": "~0.4.1",
-		"grunt-nodemon": "~0.3.0",
-		"load-grunt-tasks": "~1.0.0"
-	}
+  "name": "webcam-to-timelapse",
+  "description": "Records webcam's and turns them into timelapse movies.",
+  "version": "0.0.1",
+  "author": "http://www.tothepixel.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meanjs/mean.git"
+  },
+  "engines": {
+    "node": ">=0.10.28",
+    "npm": ">=1.4.28"
+  },
+  "scripts": {
+    "start": "grunt"
+  },
+  "dependencies": {
+    "body-parser": "^1.10.0",
+    "express": "~4.10.4",
+    "express-handlebars": "~1.1.0",
+    "extend": "~2.0.0",
+    "fluent-ffmpeg": "2.0.0-rc3",
+    "grunt-cli": "~0.1.13",
+    "log": "~1.4.0",
+    "mongoose": "~3.8.20",
+    "q": "~1.1.2",
+    "request": "~2.49.0",
+    "sanitize-filename": "^1.1.1",
+    "suncalc": "~1.6.0"
+  },
+  "devDependencies": {
+    "supertest": "~0.14.0",
+    "should": "~4.1.0",
+    "grunt-env": "~0.4.1",
+    "grunt-nodemon": "~0.3.0",
+    "load-grunt-tasks": "~1.0.0"
+  }
 }
