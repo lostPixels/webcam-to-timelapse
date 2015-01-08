@@ -1,4 +1,16 @@
 {
+	"output":{
+		"photo":"public/photos/",
+		"video":"public/video/"
+	},
     "photoFolder":"public/photos/",
-    "videoFolder":"public/videos/"
+    "videoFolder":"public/videos/",
+    "video":{
+    	"forceRender":true,
+    	"type":"ogv",
+    	"codec":"libtheora",
+    	"size":"1024x768",
+    	"fps":25,
+    	"maxFrames":240
+    }
 }

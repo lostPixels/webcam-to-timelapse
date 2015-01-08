@@ -1,17 +1,23 @@
 var data = require('./data'),
     scrape = require('./scrape'),
+    video = require('./video'),
     Q = require('Q'),
-    config = require('../config.json');
+    config = require('../config.json'),
+    suncalc = require('suncalc');
 
 
 exports.tick = function() {
     console.log('consume video files');
 
-    data.list()
-        .then(function(videosList) {
+    var videosList = [];
 
-            var list = videosList.map(function(video) {
+    data.list()
+        .then(function(list) {
+
+            videosList = list;
+            var imageList = videosList.map(function(video) {
                 return {
+                    isSunny: isWebcamSunny(video),
                     id: video._id,
                     step: video.step,
                     url: video.image_url,
@@ -19,10 +25,13 @@ exports.tick = function() {
                     last: video.step > 1 ? config.photoFolder + video.directory + '/' + (video.step - 1) + '.jpg' : null
                 };
             });
-            return fetchImages(list);
+            return fetchImages(imageList);
         })
         .then(function() {
-            //console.log('all images loaded.');
+            return renderVideos(videosList);
+        })
+        .then(function(){
+            console.log('rendered videos');
         })
         .fail(function(err) {
             console.log('error fetching images: ', err);
@@ -30,12 +39,28 @@ exports.tick = function() {
 };
 
 function fetchImages(list) {
-
-    console.log('fetch images:', list.length);
-
     var promises = [];
     list.forEach(function(item) {
-        promises.push(scrape.it(item));
+        if(item.isSunny){
+            promises.push(scrape.it(item));
+        }
     });
     return Q.all(promises);
+}
+
+function renderVideos(list) {
+    var promises = [];
+    list.forEach(function(item) {
+        if(item.isSunny){
+            promises.push(video.render(item));
+        }
+    });
+    console.log('render video list: ',list.length);
+    return Q.all(promises);
+}
+
+function isWebcamSunny(video){
+    var now = new Date().getHours();
+    var times = suncalc.getTimes(new Date(), video.latitude, video.longitude);
+    return video.ignoreDarkness || now >= new Date(times.sunrise).getHours() - 1 && now <= new Date(times.sunset).getHours() + 1
 }
