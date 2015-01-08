@@ -1,7 +1,7 @@
 {
 	"output":{
 		"photo":"public/photos/",
-		"video":"public/video/"
+		"video":"public/videos/"
 	},
     "photoFolder":"public/photos/",
     "videoFolder":"public/videos/",

@@ -32,9 +32,9 @@ exports.list = function() {
 exports.find = function(id) {
 
     var deferred = Q.defer();
-
+    
     Video.findById(id, deferred.makeNodeResolver());
-
+    
     return deferred.promise;
 };
 

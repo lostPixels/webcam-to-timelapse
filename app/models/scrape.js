@@ -9,7 +9,6 @@ Q.longStackSupport = true;
 
 exports.it = function(opts) {
     var deferred = Q.defer();
-
     getImage(opts.url)
         .then(function(results) {
             return saveFile(results.res, results.body, opts);

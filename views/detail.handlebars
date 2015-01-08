@@ -8,7 +8,7 @@
                 <a href="/" class="btn btn-primary pull-right">Back to list</a>
                 <h1>{{name}}</h1>
             </div>
-            <video src="/videos/timelapse_{{start_time}}.ogv" controls>
+            <video src="{{videoFolder}}/{{start_time}}.ogv" controls>
               Your browser does not support the <code>video</code> element.
             </video>
             <a href="/api/videos/{{start_time}}/reset" class="btn btn-primary pull-right reset-views">Reset</a>

@@ -1,4 +1,5 @@
 var data = require('./models/data'),
+    config = require('./config'),
     express = require('express');
 
 exports.init = function(app) {
@@ -6,9 +7,9 @@ exports.init = function(app) {
     var router = express.Router();
 
     router.get('/', function(req, res) {
-
         data.list().then(function(videos) {
             res.render('home', {
+                videoFolder:config.output.video,
                 videoList: videos
             });
         });
@@ -25,7 +26,7 @@ exports.init = function(app) {
     });
 
     router.get('/api/videos/:video_id', function(req, res) {
-
+        console.log(req.params.video_id)
         data.find(req.params.video_id)
         .then(function(vidResult) {
             res.render('detail', {
