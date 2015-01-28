@@ -11,9 +11,6 @@
     "node": ">=0.10.28",
     "npm": ">=1.4.28"
   },
-  "scripts": {
-    "start": "grunt"
-  },
   "dependencies": {
     "body-parser": "^1.10.0",
     "express": "~4.10.4",

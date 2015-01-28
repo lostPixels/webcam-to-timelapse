@@ -32,9 +32,9 @@ exports.list = function() {
 exports.find = function(id) {
 
     var deferred = Q.defer();
-    
+
     Video.findById(id, deferred.makeNodeResolver());
-    
+
     return deferred.promise;
 };
 
@@ -88,6 +88,15 @@ exports.update = function(id, settings) {
         .fail(function(err){
             deferred.reject(err);
         });
+
+    return deferred.promise;
+};
+
+exports.delete = function(id) {
+
+    var deferred = Q.defer();
+
+    Video.findByIdAndRemove(id,deferred.makeNodeResolver());
 
     return deferred.promise;
 };

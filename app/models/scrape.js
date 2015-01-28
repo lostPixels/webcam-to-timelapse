@@ -49,7 +49,7 @@ function saveFile(res, body, opts) {
 }
 
 function verify(type, size) {
-    return type === 'image/jpg' || type === 'image/jpeg' && size > 3000;
+    return (type === 'image/jpg' || type === 'image/jpeg') && size > 3000;
 }
 
 function getImage(url) {

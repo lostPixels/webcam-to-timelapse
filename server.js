@@ -21,6 +21,7 @@ app.set('view engine', 'handlebars');
 app.use("/assets", express.static(__dirname + '/public/assets'));
 app.use("/photos", express.static(__dirname + '/public/photos'));
 app.use("/videos", express.static(__dirname + '/public/videos'));
+app.use("/gifs", express.static(__dirname + '/public/gifs'));
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
     extended: true

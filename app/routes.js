@@ -1,6 +1,7 @@
 var data = require('./models/data'),
     config = require('./config'),
-    express = require('express');
+    express = require('express'),
+    files = require('./models/files');
 
 exports.init = function(app) {
 
@@ -9,7 +10,7 @@ exports.init = function(app) {
     router.get('/', function(req, res) {
         data.list().then(function(videos) {
             res.render('home', {
-                videoFolder:config.output.video,
+                gifFolder: config.output.gif,
                 videoList: videos
             });
         });
@@ -18,24 +19,24 @@ exports.init = function(app) {
     router.get('/api/videos', function(req, res) {
 
         data.list()
-        .then(function(videos) {
-            if (videos) {
-                res.send(JSON.stringify(videos));
-            }
-        });
+            .then(function(videos) {
+                if (videos) {
+                    res.send(JSON.stringify(videos));
+                }
+            });
     });
 
     router.get('/api/videos/:video_id', function(req, res) {
-        console.log(req.params.video_id)
         data.find(req.params.video_id)
-        .then(function(vidResult) {
-            res.render('detail', {
-                video: vidResult
+            .then(function(vidResult) {
+                console.log('show video', vidResult);
+                res.render('detail', {
+                    video: vidResult
+                });
+            })
+            .fail(function(err) {
+                res.status(404);
             });
-        })
-        .fail(function(err) {
-            res.status(404);
-        });
     });
 
     router.post('/api/videos', function(req, res) {
@@ -46,89 +47,58 @@ exports.init = function(app) {
         var darkness = req.body.ignoreDarkness;
 
         data.create({
-            name: name,
-            image_url: image_url,
-            address: address,
-            ignoreDarkness: darkness
-        })
-        .then(function() {
-            res.redirect('/');
-        })
-        .fail(function() {
-            res.status(500);
-        });
+                name: name,
+                image_url: image_url,
+                address: address,
+                ignoreDarkness: darkness
+            })
+            .then(function() {
+                res.redirect('/');
+            })
+            .fail(function() {
+                res.status(500);
+            });
+    });
+
+    router.get('/api/videos/:video_id/reset', function(req, res) {
+
+        var directoryToClear = '';
+
+        data.find(req.params.video_id)
+            .then(function(video) {
+                directoryToClear = config.output.photo + video.directory;
+                files.rmDirectory(directoryToClear,false);
+                return data.update(video._id,{
+                    step: 0
+                });
+            })
+            .then(function() {
+                res.redirect('/api/videos/'+req.params.video_id);
+            })
+            .fail(function(err) {
+                console.log('error: ',err);
+                res.status(500);
+            });
+    });
+
+    router.get('/api/videos/:video_id/delete', function(req, res) {
+
+        var directoryToClear = '';
+
+        data.find(req.params.video_id)
+            .then(function(video) {
+                directoryToClear = config.output.photo + video.directory;
+                return data.delete(req.params.video_id);
+            })
+            .then(function() {
+                files.rmDirectory(directoryToClear,true);
+                res.redirect('/');
+            })
+            .fail(function(err) {
+                console.log('error: ',err);
+                res.status(500);
+            });
     });
 
     app.use('/', router);
 };
-
-
-
-// app.get('/api/videos/:video_id', function(req, res) {
-
-//     var list = api.find(req.params.video_id).then(function(vidResult) {
-//         res.render('detail', {
-//             video: vidResult
-//         });
-//     }).fail(function(err) {
-//         res.status(404);
-//     });
-// });
-
-// app.get('/api/videos/:video_id/reset', function(req, res) {
-
-//     var folder_id = req.params.video_id;
-
-//     var list = api.update(folder_id, {
-//         step: 0
-//     }).then(function(vidResult) {
-//         console.log('video views reset, removing files...',vidResult);
-//         files.clearPhotoFolder(vidResult.directory);
-//         res.send({
-//             status: "success"
-//         });
-//     }).fail(function(err) {
-//         res.status(404);
-//     });
-// });
-
-// app.get('/api/address/:address', function(req, res) {
-
-//     var coords = geo.getCoords(req.params.address);
-
-//     coords.then(function(results) {
-//         console.log(results);
-//         res.status(200).send(results);
-//     });
-// });
-
-// app.post('/api/videos', function(req, res) {
-
-//     var name = req.body.name;
-//     var image_url = req.body.image_url;
-//     var address = req.body.address;
-//     var darkness = req.body.ignoreDarkness;
-
-//     if (is_valid_url(image_url)) {
-//         var video = api.create({
-//             name: name,
-//             image_url: image_url,
-//             address: address,
-//             ignoreDarkness:darkness
-//         });
-
-//         if (video) {
-//             res.send({
-//                 status: "success"
-//             });
-//         } else {
-//             res.send({
-//                 status: "error"
-//             });
-//         }
-//     } else {
-//         res.send({
-//             status: "bad_url"
-//         });
-//     }
-// });

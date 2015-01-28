@@ -3,7 +3,7 @@
 
     <div class="row main-form">
 
-        <div class="col-md-4 col-md-offset-4">
+        <div class="col-md-4 col-md-offset-4 add-new-video">
             <form role="form" class="form" action="/api/videos/" method="post">
 
                 <div class="form-group">
@@ -30,15 +30,16 @@
         </div>
 
     </div>
-
     <div class="row videos">
     {{#each videoList}}
         <div class="col-md-3 item">
-            <a href="api/videos/{{id}}" style="background-image:url(/videos/timelapse_{{start_time}}.gif)">
+            <a href="api/videos/{{_id}}">
                 <div class="text-wrapper">
                     <h3>{{name}}</h3>
                     <h4>frames: {{step}}</h4>
                 </div>
+                <div class="background animated" style="background-image:url(gifs/{{start_time}}.gif)"></div>
+                <div class="background static" style="background-image:url(photos/{{directory}}/{{renderStep step}}.jpg)"></div>
             </a>
         </div>
     {{/each}}

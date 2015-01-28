@@ -1,24 +1,23 @@
-var Q = require('Q');
+var Q = require('Q'),
 	config = require('../config.json'),
 	ffmpeg = require('fluent-ffmpeg');
 
 
 exports.render = function(video) {
-	console.log('Render Video: ',video.destination);
-    var deferred = Q.defer();
+	var deferred = Q.defer();
 	var photosStr = video.photosLocation + '/%1d.jpg';
-	var startFrame = 0;
+	var startFrame = video.step > config.video.maxFrames ? video.step - config.video.maxFrames : 0;
+
+	console.log('Render Video: %s, from %s to %s', video.destination,startFrame,video.step);
 
 	var proc = ffmpeg(photosStr)
-
-	.output(video.destination)
+		.inputOptions('-start_number ' + startFrame)
+		.output(video.destination)
 		.fps(config.video.fps)
 		.videoCodec(config.video.codec)
 		.size(config.video.size)
 		.outputOptions('-qscale:v 6')
-		.inputOptions('-start_number ' + startFrame)
-
-	.on('end', function() {
+		.on('end', function() {
 			//console.log('Video Rendered');
 			deferred.resolve();
 		})
@@ -30,4 +29,4 @@ exports.render = function(video) {
 	.run();
 
 	return deferred.promise;
-}
+};

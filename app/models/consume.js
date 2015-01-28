@@ -1,6 +1,7 @@
 var data = require('./data'),
     scrape = require('./scrape'),
     video = require('./video'),
+    gif = require('./gif'),
     Q = require('Q'),
     config = require('../config.json'),
     suncalc = require('suncalc');
@@ -11,6 +12,10 @@ exports.tick = function() {
     var videosList = [];
 
     data.list()
+
+        //////////////////
+        // Scrap Images //
+        //////////////////
         .then(function(list) {
 
             videosList = list;
@@ -29,15 +34,36 @@ exports.tick = function() {
                 });
             return buildQueue(scrape.it, imageData);
         })
+
+        /////////////////
+        // Render Gifs //
+        /////////////////
         .then(function() {
 
-            var videoData = videosList.filter(function(video) {
-                    return isWebcamSunny(video) && (video.step % config.video.fps === 0 || config.video.forceRender);
+            var gifData = videosList.filter(function(video) {
+                    return isWebcamSunny(video) && (video.step % config.gif.fps === 0 || config.gif.forceRender) && video.step > 0;
                 })
                 .map(function(video) {
                     return {
-                        isSunny: isWebcamSunny(video),
                         step: video.step,
+                        photosLocation: config.output.photo + video.directory,
+                        destination: config.output.gif + video.start_time + '.' + config.gif.type
+                    };
+                });
+            return buildQueue(gif.render, gifData);
+        })
+
+        ///////////////////
+        // Render videos //
+        ///////////////////
+        .then(function() {
+
+            var videoData = videosList.filter(function(video) {
+                    return isWebcamSunny(video) && (video.step % config.video.fps === 0 || config.video.forceRender) && video.step > 0;
+                })
+                .map(function(video) {
+                    return {
+                        step:video.step,
                         photosLocation: config.output.photo + video.directory,
                         destination: config.output.video + video.start_time + '.' + config.video.type
                     };
@@ -48,38 +74,36 @@ exports.tick = function() {
             //console.log('Queue complete.');
         })
         .fail(function(err) {
-            console.log('error fetching images: ', err);
+            console.log('error during consume: ', err);
         });
 };
 
+/* Schedules all jobs in a sequence */
 function buildQueue(funct,list) {
     var promises = [];
+
+    var result = Q();
+
+    list.forEach(function(item) {
+        result = result.then(function(){
+            return funct(item);
+        });
+    });
+    return result;
+}
+/* Schedules all jobs at the same time.
+function buildQueue(funct,list) {
+    var promises = [];
+
     list.forEach(function(item) {
         promises.push(funct(item));
     });
     return Q.all(promises);
 }
-
-// function fetchImages(list) {
-//     var promises = [];
-//     list.forEach(function(item) {
-//         promises.push(scrape.it(item));
-//     });
-//     return Q.all(promises);
-// }
-
-// function renderVideos(list) {
-//     var promises = [];
-//     list.forEach(function(item) {
-//         if (item.isSunny) {
-//             promises.push(video.render(item));
-//         }
-//     });
-//     return Q.all(promises);
-// }
+ */
 
 function isWebcamSunny(video) {
     var now = new Date().getHours();
     var times = suncalc.getTimes(new Date(), video.latitude, video.longitude);
-    return video.ignoreDarkness || now >= new Date(times.sunrise).getHours() - 1 && now <= new Date(times.sunset).getHours() + 1
+    return video.ignoreDarkness || now >= new Date(times.sunrise).getHours() - 1 && now <= new Date(times.sunset).getHours() + 1;
 }

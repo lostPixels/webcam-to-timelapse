@@ -1,19 +1,17 @@
 <div class="container detail">
 
-
-    {{#each video}}
     <div class="row">
         <div class="col-md-8 col-md-offset-2 video-wrapper">
             <div>
                 <a href="/" class="btn btn-primary pull-right">Back to list</a>
-                <h1>{{name}}</h1>
+                <h1>{{video.name}}</h1>
             </div>
-            <video src="{{videoFolder}}/{{start_time}}.ogv" controls>
+            <video src="/videos/{{video.start_time}}.ogv" controls>
               Your browser does not support the <code>video</code> element.
             </video>
-            <a href="/api/videos/{{start_time}}/reset" class="btn btn-primary pull-right reset-views">Reset</a>
+            <a href="/api/videos/{{video._id}}/reset" class="btn btn-warning pull-right reset-views">Reset</a>
+            <a href="/api/videos/{{video._id}}/delete" class="btn btn-warning pull-right reset-views">delete</a>
         </div>
     </div>
-    {{/each}}
 
 </div>
