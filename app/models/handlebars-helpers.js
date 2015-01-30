@@ -5,3 +5,7 @@ exports.renderDate = function(epoche_time) {
 exports.renderStep = function(step) {
     return parseInt(step) - 1;
 };
+
+exports.encoded = function(str){
+    return encodeURIComponent(str);
+};

@@ -12,7 +12,6 @@ exports.tick = function() {
     var videosList = [];
 
     data.list()
-
         //////////////////
         // Scrap Images //
         //////////////////
@@ -29,12 +28,11 @@ exports.tick = function() {
                         step: video.step,
                         url: video.image_url,
                         destination: config.output.photo + video.directory + '/' + video.step + '.jpg',
-                        last: video.step > 1 ? config.photoFolder + video.directory + '/' + (video.step - 1) + '.jpg' : null
+                        last: video.step > 1 ? config.output.photo + video.directory + '/' + (video.step - 1) + '.jpg' : null
                     };
                 });
             return buildQueue(scrape.it, imageData);
         })
-
         /////////////////
         // Render Gifs //
         /////////////////
@@ -52,7 +50,6 @@ exports.tick = function() {
                 });
             return buildQueue(gif.render, gifData);
         })
-
         ///////////////////
         // Render videos //
         ///////////////////
@@ -71,10 +68,10 @@ exports.tick = function() {
             return buildQueue(video.render, videoData);
         })
         .then(function() {
-            //console.log('Queue complete.');
+            console.log('--------');
         })
         .fail(function(err) {
-            console.log('error during consume: ', err);
+            console.log('error during consume: %s', err);
         });
 };
 

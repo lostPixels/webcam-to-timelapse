@@ -4,15 +4,13 @@
 		"video":"public/videos/",
         "gif":"public/gifs/"
 	},
-    "photoFolder":"public/photos/",
-    "videoFolder":"public/videos/",
     "video":{
     	"forceRender":false,
     	"type":"ogv",
     	"codec":"libtheora",
     	"size":"1024x768",
-    	"fps":25,
-    	"maxFrames":240
+    	"fps":30,
+    	"maxFrames":640
     },
     "gif":{
         "forceRender":false,

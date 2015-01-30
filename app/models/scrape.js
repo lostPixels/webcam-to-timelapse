@@ -19,7 +19,7 @@ exports.it = function(opts) {
             });
         })
         .catch(function(err) {
-            console.log(err, opts.url);
+            console.log('error during scrape: %s from url: %s',err, opts.url);
         })
         .finally(function() {
             deferred.resolve();

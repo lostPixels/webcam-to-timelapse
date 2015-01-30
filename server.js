@@ -12,7 +12,8 @@ var hbs = exphbs.create({
     defaultLayout: 'main',
     helpers: {
         date: hbshelpers.renderDate,
-        renderStep: hbshelpers.renderStep
+        renderStep: hbshelpers.renderStep,
+        encoded: hbshelpers.encoded
     }
 });
 
