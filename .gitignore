@@ -1,6 +1,6 @@
-/public/photos/
-/public/videos/
-/public/gifs/
+/public/photos/*
+/public/videos/*
+/public/gifs/*
 
 # iOS / Apple
 # ===========

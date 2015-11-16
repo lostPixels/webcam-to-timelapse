@@ -1,12 +1,15 @@
 var fs = require('fs'),
     Q = require('q'),
-    config = require('../config.json');
+    config = require('../config.json'),
+    path = require('path');
 
 
 exports.createFolder = function(folderID) {
 
     var deferred = Q.defer(),
-        dirName = config.photoFolder + folderID;
+        dirName = path.normalize(config.output.photo + folderID);
+
+    console.log('make folder: ',dirName);
 
     fs.mkdir(dirName, deferred.makeNodeResolver());
 
